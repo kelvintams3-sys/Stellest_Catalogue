@@ -62,13 +62,15 @@ Prices are per pair.
 
 ## Print output
 
-- The quotation and guarantee retain their separate portrait print actions at the top of the print panel.
-- The quotation label uses the supplied Essilor logo above the selected product name and shows the coating, optional frame, selected follow-ups and Grand Total.
+- The quotation remains portrait. Its price, frame, follow-up and complimentary states are rendered into the same monochrome bitmap for both the on-screen preview and the printer, so the preview shows the actual sent artwork.
+- The guarantee artwork is rendered as a positive-black monochrome image, rotated into the physical 40 × 60 mm raster before sending it to the printer. It does not depend on the printer rotating text or accepting a 60 × 40 mm stock size.
+- The logo and selected STELLEST name occupy one line across the landscape guarantee. Its on-screen preview is generated from the same artwork used for the print bitmap.
+- Printed labels use a positive black Essilor logo on white. The quotation uses a slightly smaller product name and price details with more spacing between the logo, product and item rows.
 - Complimentary frame and follow-up entries retain their struck-through original prices on the printout without printing the word COMPLIMENTARY.
 - The separate guarantee label reads: “6-Month Prescription Change Guarantee — For prescription increase by 0.75D or more within 6 months, lenses will be replaced at no charge.”
 - The guarantee sentence uses smaller supporting text than the guarantee title.
-- A third 60 × 40 mm landscape booklet label appears below the two portrait labels and is reached by scrolling down.
-- The booklet label includes unticked “Follow-up 1 done” and “Follow-up 2 done” boxes, with blank space for handwritten follow-up dates and no printed date lines.
+- A third landscape booklet label appears below the first two labels and is reached by scrolling down. Like the guarantee, it is pre-rotated as a monochrome bitmap into the physical 40 × 60 mm printer raster, and its preview uses the same artwork.
+- The booklet label includes unticked “Follow-up 1” and “Follow-up 2” boxes, with blank space for handwritten follow-up dates and no printed date lines.
 - It states that further biometry follow-ups are RM120 per visit and repeats the six-month guarantee wording.
 - The booklet guarantee title and supporting sentence are clearly separated, with slightly larger supporting text for readability.
 - Browser printing is omitted.
@@ -81,6 +83,10 @@ Prices are per pair.
     assets/
       essilor-logo.png
       stellest-hero.png
+      guarantee-stellest.png
+      guarantee-stellest2.png
+      booklet-stellest.png
+      booklet-stellest2.png
     trigger/
       deploy.txt
 
@@ -95,9 +101,9 @@ The site is self-contained apart from the external clinical-study link.
 - Follow-up totals calculate correctly in paid and complimentary states.
 - STELLEST 2.0 study link opens the peer-reviewed paper.
 - Summary and print label preserve the selected options.
-- D520BT-Z quotation and guarantee output remains 40 × 60 mm; the booklet label uses 60 × 40 mm landscape output.
+- All D520BT-Z output remains physically 40 × 60 mm. The quotation is printed from its live preview bitmap. The guarantee and booklet are pre-rotated into their transmitted bitmaps, including the logo and text; neither relies on the printer's text rotation.
 - No customer or patient data is stored.
 
 ## Current release
 
-2026-09-27-r1.20
+2026-09-28-r1.25
