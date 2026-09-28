@@ -1,0 +1,1147 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#071b52">
+  <meta name="stellest-catalogue-release" content="2026-09-28-r1.22">
+  <title>Stellest Catalogue</title>
+  <meta name="description" content="Interactive Essilor Stellest and Stellest 2.0 consultation catalogue.">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23071b52'/%3E%3Ccircle cx='32' cy='32' r='18' fill='none' stroke='%236bd4da' stroke-width='4'/%3E%3Ccircle cx='32' cy='32' r='7' fill='%23fff'/%3E%3C/svg%3E">
+  <style>
+    :root{
+      --bg:#f7f9fc;
+      --card:#fff;
+      --ink:#071b52;
+      --text:#111827;
+      --muted:#64748b;
+      --line:#e5e7eb;
+      --blue:#0b2a66;
+      --ios:#1266d6;
+      --teal:#009ca6;
+      --teal-soft:#eaf8f8;
+      --total:#f1f6fd;
+      --total-border:#c9d9ee;
+      --shadow:0 10px 34px rgba(7,27,82,.08);
+      --safe-bottom:max(18px,env(safe-area-inset-bottom));
+    }
+    *{box-sizing:border-box}
+    html{font-size:16px;-webkit-tap-highlight-color:transparent}
+    body{
+      margin:0;
+      min-height:100vh;
+      background:var(--bg);
+      color:var(--text);
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+      -webkit-font-smoothing:antialiased;
+    }
+    button,input{font:inherit}
+    button{cursor:pointer}
+    a{color:var(--ios)}
+    .topbar{
+      position:sticky;
+      top:0;
+      z-index:30;
+      min-height:78px;
+      display:grid;
+      grid-template-columns:70px 1fr 70px;
+      align-items:center;
+      padding:10px max(22px,env(safe-area-inset-right)) 10px max(22px,env(safe-area-inset-left));
+      background:rgba(255,255,255,.94);
+      border-bottom:1px solid rgba(201,217,238,.8);
+      backdrop-filter:blur(18px);
+    }
+    .topbar-center{text-align:center;line-height:1.15}
+    .brand-title{font-size:1.05rem;font-weight:900;letter-spacing:.13em;color:var(--ink)}
+    .brand-sub{font-size:.72rem;font-weight:800;letter-spacing:.14em;color:var(--teal);margin-top:4px}
+    .icon-button{
+      width:48px;height:48px;border:0;border-radius:15px;background:#eef4fb;color:var(--ink);
+      font-size:1.45rem;font-weight:800;display:flex;align-items:center;justify-content:center;
+    }
+    .icon-button:active{transform:scale(.97);background:#e4edf8}
+    .icon-button.invisible{visibility:hidden}
+    .app{
+      width:min(1080px,100%);
+      margin:0 auto;
+      padding:26px 24px calc(120px + var(--safe-bottom));
+    }
+    .screen{animation:screenIn .2s ease both}
+    @keyframes screenIn{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+    .hero{
+      position:relative;
+      min-height:230px;
+      overflow:hidden;
+      border-radius:26px;
+      margin-bottom:20px;
+      color:#fff;
+      background:#063b65 url("assets/stellest-hero.png") center 57%/cover no-repeat;
+      box-shadow:0 14px 36px rgba(3,44,81,.18);
+    }
+    .hero::after{content:"";position:absolute;inset:0;background:transparent;pointer-events:none}
+    .hero-copy{position:relative;z-index:1;width:min(580px,70%);padding:24px 28px}
+    .hero .eyebrow{display:inline-flex;padding:8px 11px;border-radius:999px;background:rgba(255,255,255,.94);color:var(--ink);box-shadow:0 5px 16px rgba(7,27,82,.1)}
+    .eyebrow{font-size:.8rem;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:#8ee5e2}
+    .hero h1{font-size:clamp(2rem,5vw,3.4rem);line-height:1.02;margin:10px 0 12px;letter-spacing:-.035em}
+    .hero p{font-size:1.06rem;line-height:1.45;margin:0;color:rgba(255,255,255,.9)}
+    .hero-badge{
+      display:inline-flex;align-items:center;gap:8px;margin-top:20px;padding:9px 13px;
+      border-radius:999px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);
+      font-size:.84rem;font-weight:800;
+    }
+    .catalogue-hero{
+      min-height:310px;display:grid;grid-template-columns:minmax(0,1.18fr) minmax(330px,.82fr);
+      overflow:hidden;border-radius:26px;margin-bottom:24px;background:linear-gradient(135deg,#071b52 0%,#087d8b 112%);
+      box-shadow:0 14px 36px rgba(3,44,81,.16);
+    }
+    .catalogue-hero-copy{padding:38px 40px;display:flex;flex-direction:column;justify-content:center;color:#fff}
+    .catalogue-hero-copy .eyebrow{color:#9be8e4}
+    .catalogue-hero-copy h1{font-size:clamp(2.45rem,4.7vw,3.7rem);line-height:.98;letter-spacing:-.05em;margin:12px 0 15px}
+    .catalogue-hero-copy p{font-size:1.05rem;line-height:1.45;color:rgba(255,255,255,.86);margin:0;max-width:34rem}
+    .catalogue-hero-photo{width:100%;height:100%;min-height:310px;display:block;object-fit:cover;object-position:center 52%}
+    .section-kicker{font-size:.82rem;font-weight:900;letter-spacing:.13em;text-transform:uppercase;color:var(--teal);margin:26px 2px 10px}
+    .section-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin:0 2px 14px}
+    .section-heading h2{font-size:1.62rem;color:var(--ink);margin:0;letter-spacing:-.025em}
+    .section-heading p{margin:3px 0 0;color:var(--muted);line-height:1.4}
+    .compare-link{
+      border:1px solid #cad8ea;background:#fff;color:var(--ink);border-radius:13px;padding:11px 16px;
+      font-weight:850;white-space:nowrap;
+    }
+    .compare-link:active{background:#eef5ff}
+    .product-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+    .product-card{
+      position:relative;min-height:310px;text-align:left;border:1px solid var(--line);border-radius:23px;
+      padding:26px;background:#fff;overflow:hidden;box-shadow:0 7px 25px rgba(7,27,82,.05);cursor:pointer;
+      transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;
+    }
+    .product-card:hover{transform:translateY(-2px);box-shadow:var(--shadow);border-color:#c8d7ea}
+    .product-card:active{transform:scale(.992)}
+    .product-card.next{
+      background:linear-gradient(145deg,#082459 0%,#0b3d7b 60%,#086d80 120%);
+      color:#fff;border-color:#153e78;
+    }
+    .product-top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+    .tech-pill{
+      display:inline-flex;border-radius:999px;padding:7px 10px;background:var(--teal-soft);color:#007e87;
+      font-size:.75rem;font-weight:900;letter-spacing:.1em;
+    }
+    .next .tech-pill{background:rgba(119,227,225,.14);color:#a4f2ed;border:1px solid rgba(164,242,237,.18)}
+    .lens-orbit{position:relative;width:86px;height:86px;border:1px solid rgba(0,156,166,.35);border-radius:50%;flex:0 0 auto}
+    .lens-orbit::before,.lens-orbit::after{content:"";position:absolute;border-radius:50%;border:1px solid rgba(0,156,166,.3)}
+    .lens-orbit::before{inset:12px}.lens-orbit::after{inset:25px;background:radial-gradient(circle,#00a8b2 0 5px,transparent 6px)}
+    .lens-orbit i{position:absolute;width:8px;height:8px;border-radius:50%;background:#ff6f80;box-shadow:36px 3px 0 #49cbd0,-28px 30px 0 #7cdade,38px 54px 0 #ff8c9a;left:16px;top:7px}
+    .next .lens-orbit,.next .lens-orbit::before{border-color:rgba(151,236,235,.38)}
+    .product-name{font-size:clamp(2rem,4.5vw,3.05rem);line-height:.96;margin:24px 0 7px;color:var(--ink);letter-spacing:-.05em}
+    .next .product-name{color:#fff}
+    .product-tagline{font-size:1rem;line-height:1.42;color:var(--muted);min-height:45px}
+    .next .product-tagline{color:rgba(255,255,255,.78)}
+    .stat-chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:18px}
+    .stat-chip{font-size:.78rem;font-weight:800;padding:7px 10px;background:#f1f5fa;color:#31415f;border-radius:999px}
+    .next .stat-chip{background:rgba(255,255,255,.1);color:#eefbff;border:1px solid rgba(255,255,255,.12)}
+    .product-bottom{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;margin-top:23px}
+    .from-label{font-size:.72rem;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.09em}
+    .next .from-label{color:rgba(255,255,255,.58)}
+    .from-price{font-size:1.48rem;font-weight:900;color:var(--ink);margin-top:2px}
+    .next .from-price{color:#fff}
+    .card-arrow{
+      width:44px;height:44px;border-radius:14px;background:#edf4fd;color:var(--ios);display:flex;
+      align-items:center;justify-content:center;font-size:1.35rem;font-weight:900;
+    }
+    .next .card-arrow{background:rgba(255,255,255,.13);color:#fff}
+    .quiet-note{margin:17px 4px 0;color:#7b879a;font-size:.82rem;line-height:1.45}
+    .compare-note{margin-bottom:18px}
+    .page-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin:2px 2px 18px}
+    .page-head h1{font-size:2rem;line-height:1.08;margin:0;color:var(--ink);letter-spacing:-.035em}
+    .page-head p{margin:7px 0 0;color:var(--muted);line-height:1.45}
+    .panel{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:25px 28px;margin-bottom:14px}
+    .panel-title{font-size:1.12rem;font-weight:900;color:var(--ink);margin:0}
+    .panel-sub{font-size:.9rem;color:var(--muted);margin:5px 0 0;line-height:1.42}
+    .compare-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;align-items:stretch}
+    .compare-card{
+      display:flex;flex-direction:column;background:#fff;border:1px solid var(--line);border-radius:22px;
+      overflow:hidden;box-shadow:0 7px 24px rgba(7,27,82,.05);transition:border-color .16s ease,box-shadow .16s ease;
+    }
+    .compare-card.selected{border-color:#8ab5ed;box-shadow:0 0 0 3px rgba(18,102,214,.08),0 9px 28px rgba(7,27,82,.09)}
+    .compare-card-head{
+      min-height:136px;padding:25px;color:#fff;background:linear-gradient(135deg,#057f88,#11aab1);
+      display:flex;flex-direction:column;justify-content:flex-end;
+    }
+    .compare-card-head.next{background:linear-gradient(135deg,#08265e,#0d5991)}
+    .compare-card-head .eyebrow{color:rgba(255,255,255,.72)}
+    .compare-card-head h2{font-size:clamp(1.95rem,4vw,2.25rem);line-height:1;letter-spacing:-.04em;margin:7px 0 0;white-space:nowrap}
+    .compare-card-body{display:flex;flex:1;flex-direction:column;padding:8px 25px 24px}
+    .fact-row{display:flex;justify-content:space-between;gap:20px;padding:17px 0;border-bottom:1px solid #edf0f4;align-items:flex-start}
+    .fact-lenslets{min-height:88px}
+    .fact-rings{min-height:64px}
+    .fact-design{min-height:150px}
+    .fact-row:last-child{border-bottom:0}
+    .fact-label{color:var(--muted);font-size:.87rem;font-weight:750}
+    .fact-value{text-align:right;color:var(--ink);font-weight:900;line-height:1.35;max-width:62%}
+    .efficacy-box{margin:16px 0 2px;border-radius:17px;background:var(--total);border:1px solid var(--total-border);padding:17px}
+    .efficacy-value{font-size:1.18rem;line-height:1.35;color:var(--ink);font-weight:900}
+    .study-link{display:inline-flex;margin-top:10px;font-weight:850;text-decoration:none}
+    .study-link:hover{text-decoration:underline}
+    .bundle-section{margin-top:auto;padding-top:20px}
+    .bundle-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
+    .bundle-title{font-size:.94rem;font-weight:900;color:var(--ink)}
+    .bundle-note{font-size:.72rem;font-weight:800;color:var(--muted);white-space:nowrap}
+    .bundle-options{display:grid;gap:10px;margin-top:11px}
+    .bundle-option{
+      width:100%;min-height:76px;border:1px solid #dce3ec;background:#fff;border-radius:15px;padding:12px 13px;
+      display:grid;grid-template-columns:22px 1fr auto;align-items:center;gap:10px;text-align:left;color:var(--text);
+      transition:border-color .16s ease,box-shadow .16s ease,background .16s ease;
+    }
+    .bundle-option.selected{border:2px solid var(--ios);padding:11px 12px;background:#f7fbff;box-shadow:0 0 0 3px rgba(18,102,214,.07)}
+    .bundle-radio{width:21px;height:21px;border-radius:50%;border:2px solid #aeb9c8;background:#fff}
+    .bundle-option.selected .bundle-radio{border-color:var(--ios);background:var(--ios);box-shadow:inset 0 0 0 5px #fff}
+    .bundle-name{display:block;font-size:.92rem;font-weight:900;color:var(--ink)}
+    .bundle-copy{display:block;font-size:.72rem;line-height:1.35;color:var(--muted);margin-top:3px}
+    .bundle-price{font-size:1rem;font-weight:950;color:var(--ink);white-space:nowrap}
+    .primary-button,.secondary-button{
+      border:0;border-radius:14px;min-height:50px;padding:13px 22px;font-weight:900;font-size:1rem;
+    }
+    .primary-button{background:var(--blue);color:#fff;box-shadow:0 7px 18px rgba(11,42,102,.16)}
+    .primary-button:active{transform:scale(.985);background:#071f51}
+    .secondary-button{background:#edf3fa;color:var(--ink)}
+    .wide-button{width:100%}
+    .comparison-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:16px}
+    .product-switch{display:inline-grid;grid-template-columns:1fr 1fr;gap:4px;background:#eaf0f7;padding:4px;border-radius:14px}
+    .product-switch button{border:0;background:transparent;color:#536179;border-radius:11px;padding:9px 13px;font-size:.82rem;font-weight:850}
+    .product-switch button.active{background:#fff;color:var(--ink);box-shadow:0 2px 8px rgba(7,27,82,.08)}
+    .config-banner{
+      position:relative;overflow:hidden;border-radius:23px;margin-bottom:14px;padding:27px 30px;color:#fff;
+      background:linear-gradient(135deg,#057d86,#0ba8ae);box-shadow:0 10px 28px rgba(0,125,134,.14);
+    }
+    .config-banner.next{background:linear-gradient(135deg,#081f54,#0b4f88)}
+    .config-banner::after{
+      content:"";position:absolute;right:-50px;top:-75px;width:260px;height:260px;border-radius:50%;
+      border:1px solid rgba(255,255,255,.23);box-shadow:0 0 0 34px rgba(255,255,255,.05),0 0 0 70px rgba(255,255,255,.04);
+    }
+    .config-banner>*{position:relative;z-index:1}
+    .config-banner h1{font-size:clamp(2.55rem,6vw,4.7rem);line-height:.93;letter-spacing:-.055em;margin:9px 0 10px}
+    .banner-facts{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+    .banner-fact{padding:8px 11px;border-radius:999px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.14);font-size:.79rem;font-weight:850}
+    .option-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:18px}
+    .option-card{
+      position:relative;border:1px solid #dce3ec;background:#fff;border-radius:17px;padding:18px;text-align:left;
+      min-height:132px;color:var(--text);transition:border-color .16s ease,box-shadow .16s ease,background .16s ease;
+    }
+    .option-card.selected{border:2px solid var(--ios);padding:17px;background:#f7fbff;box-shadow:0 0 0 3px rgba(18,102,214,.07)}
+    .option-card .check{
+      position:absolute;right:15px;top:15px;width:23px;height:23px;border-radius:50%;border:2px solid #aeb9c8;background:#fff;
+    }
+    .option-card.selected .check{border-color:var(--ios);background:var(--ios);box-shadow:inset 0 0 0 5px #fff}
+    .option-name{font-size:1.03rem;font-weight:900;color:var(--ink);padding-right:30px}
+    .option-copy{font-size:.84rem;color:var(--muted);line-height:1.4;margin-top:8px}
+    .option-price{font-size:1.2rem;font-weight:900;color:var(--ink);margin-top:13px}
+    .row-action{
+      width:100%;border:0;background:transparent;padding:0;display:grid;grid-template-columns:1fr auto;
+      align-items:center;gap:18px;text-align:left;color:inherit;
+    }
+    .row-label{font-size:1.08rem;line-height:1.3;font-weight:800;color:#52617a}
+    .row-sub{font-size:.84rem;color:var(--muted);margin-top:4px}
+    .row-value{font-size:1.05rem;line-height:1.3;font-weight:800;color:var(--ink);white-space:nowrap}
+    .frame-hold{position:relative;overflow:hidden;user-select:none;-webkit-user-select:none}
+    .frame-hold::after{content:"";position:absolute;left:0;right:100%;bottom:0;height:3px;background:var(--ios);border-radius:999px}
+    .frame-hold.pressing::after{right:0;transition:right .85s linear}
+    .frame-clear{border:0;background:#f0f3f7;color:#64748b;border-radius:10px;padding:7px 10px;font-size:.8rem;font-weight:850;margin-left:8px}
+    .bio-heading-wrap{display:flex;align-items:center;justify-content:space-between;gap:16px}
+    .bio-title{
+      position:relative;overflow:hidden;border:0;background:transparent;padding:2px 0;text-align:left;color:#52617a;
+      font:inherit;font-size:1.08rem;line-height:1.3;font-weight:800;letter-spacing:0;user-select:none;-webkit-user-select:none;
+    }
+    .bio-title::after{
+      content:"";position:absolute;left:0;right:100%;bottom:0;height:3px;background:var(--ios);border-radius:999px;
+    }
+    .bio-title.pressing::after{right:0;transition:right .85s linear}
+    .hold-hint{font-size:.76rem;color:#7d899a;font-weight:750;text-align:right}
+    .follow-list{margin-top:10px;border-top:1px solid #edf0f4}
+    .follow-row{
+      width:100%;border:0;background:transparent;display:grid;grid-template-columns:24px 1fr auto;gap:10px;
+      align-items:center;padding:11px 0;border-bottom:1px solid #edf0f4;text-align:left;color:inherit;
+    }
+    .follow-row:last-child{border-bottom:0}
+    .tick{width:20px;height:20px;border-radius:6px;border:2px solid #aeb9c8;background:#fff;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.7rem;font-weight:850}
+    .follow-row.selected .tick{background:var(--ios);border-color:var(--ios)}
+    .follow-name{font-size:.9rem;line-height:1.3;font-weight:700;color:#33415a}
+    .follow-status{font-size:1.05rem;line-height:1.3;font-weight:800;color:var(--ink);text-align:right}
+    .complimentary-stack{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+    .complimentary-stack s{font-size:.79rem;color:#8b96a7}
+    .complimentary-pill{display:inline-flex;border-radius:999px;padding:5px 8px;background:#e7f1ff;color:#0b5bd3;font-size:.68rem;font-weight:950;letter-spacing:.035em}
+    .sticky-total{
+      position:sticky;bottom:max(12px,var(--safe-bottom));z-index:20;display:grid;grid-template-columns:1fr auto;
+      gap:18px;align-items:center;background:rgba(241,246,253,.96);border:1px solid var(--total-border);
+      border-radius:20px;padding:15px 17px 15px 21px;box-shadow:0 12px 34px rgba(7,27,82,.17);backdrop-filter:blur(16px);
+      margin-top:16px;
+    }
+    .total-label{font-size:.78rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#5a6a82}
+    .total-value{font-size:1.7rem;font-weight:950;letter-spacing:-.03em;color:var(--ink);margin-top:2px}
+    .sticky-total .primary-button{min-width:185px}
+    .summary-card{background:#fff;border:1px solid var(--line);border-radius:23px;overflow:hidden;box-shadow:var(--shadow)}
+    .summary-hero{padding:28px 30px;color:#fff;background:linear-gradient(135deg,#057d86,#0ba8ae)}
+    .summary-hero.next{background:linear-gradient(135deg,#081f54,#0b4f88)}
+    .summary-hero h1{font-size:clamp(2.8rem,7vw,5.2rem);line-height:.91;letter-spacing:-.06em;margin:9px 0 5px}
+    .summary-body{padding:8px 24px 16px}
+    .summary-row{display:grid;grid-template-columns:1fr auto;gap:18px;padding:12px 0;border-bottom:1px solid #edf0f4;align-items:center}
+    .summary-row:last-child{border-bottom:0}
+    .summary-row-label{font-size:1.08rem;line-height:1.3;color:#52617a;font-weight:800}
+    .summary-row-value{font-size:1.05rem;line-height:1.3;text-align:right;color:var(--ink);font-weight:800}
+    .summary-grand{
+      margin:18px 0 0;padding:20px 22px;border:1px solid var(--total-border);border-radius:18px;background:var(--total);
+      display:flex;justify-content:space-between;align-items:center;color:var(--ink);
+    }
+    .summary-grand span:first-child{font-weight:850}
+    .summary-grand strong{font-size:2rem;letter-spacing:-.035em}
+    .summary-controls{margin-top:10px}
+    .summary-controls .panel{padding:16px 24px;margin-bottom:10px}
+    .summary-controls .panel:last-child{margin-bottom:0}
+    .summary-card .row-sub{font-size:.98rem;line-height:1.3;margin-top:5px;color:#66758d}
+    .summary-total{margin-top:14px}
+    .summary-actions{display:grid;grid-template-columns:1fr 1.3fr;gap:12px;margin-top:15px}
+    .overlay{
+      display:none;position:fixed;inset:0;z-index:100;background:rgba(5,18,44,.38);padding:24px;
+      align-items:center;justify-content:center;backdrop-filter:blur(4px);
+    }
+    .overlay.open{display:flex}
+    .sheet{
+      width:min(560px,100%);max-height:min(90vh,900px);overflow:auto;background:#fff;border-radius:24px;padding:24px;
+      box-shadow:0 24px 70px rgba(5,18,44,.28);
+    }
+    .sheet-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:18px}
+    .sheet-head h2{font-size:1.45rem;color:var(--ink);margin:0}
+    .sheet-head p{margin:5px 0 0;color:var(--muted);line-height:1.4}
+    .close-button{border:0;background:#eef3f8;color:var(--ink);width:42px;height:42px;border-radius:13px;font-size:1.25rem;font-weight:900}
+    .frame-display{background:#f4f7fb;border:1px solid #dce3ec;border-radius:16px;padding:18px;text-align:right;font-size:2rem;font-weight:950;color:var(--ink);margin-bottom:13px}
+    .keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+    .keypad button{border:0;border-radius:14px;min-height:58px;background:#f1f4f8;color:var(--ink);font-size:1.18rem;font-weight:900}
+    .keypad button:active{transform:scale(.98);background:#e4ecf7}
+    .sheet-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:13px}
+    .info-list{display:grid;gap:10px;margin-top:15px}
+    .info-item{padding:14px 15px;background:#f5f8fc;border:1px solid #e1e7ef;border-radius:14px;line-height:1.4}
+    .info-item strong{display:block;color:var(--ink);margin-bottom:3px}
+    .disclaimer{font-size:.8rem;line-height:1.48;color:#6f7b8d;margin-top:16px}
+    .label-preview-wrap{overflow-x:auto;padding:8px 0 18px}
+    .label-preview-grid{display:flex;gap:16px;width:max-content;min-width:100%;justify-content:center}
+    .label-preview{
+      width:240px;height:360px;background:#fff;border:1px solid #d1d5db;box-shadow:0 10px 28px rgba(0,0,0,.12);
+      padding:16px 15px;color:#000;font-family:Arial,sans-serif;display:flex;flex-direction:column;
+    }
+    .label-essilor-logo{
+      width:64px;height:auto;display:block;flex:0 0 auto;margin-bottom:6px;object-fit:contain;
+      filter:grayscale(1) contrast(500%);
+      -webkit-print-color-adjust:exact;print-color-adjust:exact;
+    }
+    .label-product{font-size:1.58rem;font-weight:950;letter-spacing:-.04em;line-height:.94;margin:5px 0 10px}
+    .label-product.product-long{font-size:1.34rem;letter-spacing:-.045em;white-space:nowrap}
+    .label-tech{font-size:.68rem;font-weight:800;margin-bottom:9px}
+    .label-rule{height:2px;background:#000;margin:4px 0 8px}
+    .label-row{display:flex;justify-content:space-between;gap:10px;font-size:.7rem;font-weight:700;padding:5px 0}
+    .label-row span:last-child{text-align:right;font-weight:900}
+    .label-struck-price{font-size:.72rem;font-weight:800}
+    .label-total{margin-top:auto;border-top:2px solid #000;padding-top:8px;display:flex;justify-content:space-between;align-items:flex-end}
+    .label-total span{font-size:.78rem;font-weight:900}
+    .label-total strong{font-size:1.42rem}
+    .label-warranty{width:360px;height:240px;max-width:100%;padding:15px 17px}
+    .warranty-head{display:flex;align-items:center;gap:14px;min-height:50px}
+    .warranty-head .label-essilor-logo{width:58px;margin:0}
+    .warranty-head .label-product{font-size:1.25rem;margin:0}
+    .warranty-head .label-product.product-long{font-size:1.1rem;white-space:nowrap}
+    .label-warranty .label-rule{margin:6px 0 11px}
+    .warranty-title{font-size:1rem;font-weight:950;line-height:1.12;margin:0 0 9px}
+    .warranty-copy{font-size:.72rem;font-weight:800;line-height:1.38;margin:0;max-width:315px}
+    .booklet-print-block{width:360px;max-width:100%;margin:22px auto 0;display:flex;flex-direction:column;gap:10px}
+    .booklet-print-block .print-action-button{width:100%}
+    .label-booklet{width:360px;height:240px;max-width:100%;padding:15px 17px}
+    .booklet-head{display:flex;align-items:center;gap:11px;min-height:44px}
+    .booklet-head .label-essilor-logo{margin:0;width:55px}
+    .booklet-product{font-size:1.2rem;font-weight:950;letter-spacing:-.03em;line-height:1}
+    .booklet-product.product-long{font-size:1.02rem;letter-spacing:-.035em;white-space:nowrap}
+    .booklet-title{margin-left:auto;text-align:right;font-size:.5rem;font-weight:950;line-height:1.18;letter-spacing:.025em}
+    .booklet-rule{height:2px;background:#000;margin:5px 0 9px}
+    .booklet-main{display:grid;grid-template-columns:.86fr 1.14fr;gap:10px;min-height:105px}
+    .booklet-followups{display:flex;flex-direction:column;justify-content:center;gap:42px;transform:translateY(-4px)}
+    .booklet-check{display:flex;align-items:center;gap:7px;font-size:.61rem;font-weight:900}
+    .booklet-box{width:14px;height:14px;border:2px solid #000;border-radius:2px;flex:0 0 auto}
+    .booklet-warranty{border-left:1px solid #000;padding:5px 0 5px 10px;display:flex;flex-direction:column;justify-content:center;gap:6px}
+    .booklet-warranty strong{display:block;font-size:.65rem;font-weight:950;line-height:1.15;margin:0}
+    .booklet-warranty span{display:block;font-size:.55rem;font-weight:700;line-height:1.3}
+    .booklet-fee{margin-top:auto;border-top:1px solid #000;padding-top:7px;text-align:center;font-size:.56rem;font-weight:700}
+    .booklet-fee strong{font-weight:950}
+    .print-status{
+      display:flex;align-items:center;gap:10px;min-height:48px;margin-top:2px;padding:12px 14px;
+      border:1px solid #dce3ec;border-radius:14px;background:#f5f8fc;color:#526075;font-size:.88rem;font-weight:850;
+    }
+    .print-status-dot{width:9px;height:9px;border-radius:50%;background:#8290a5;flex:0 0 auto}
+    .print-status[data-state="busy"] .print-status-dot{background:#1676d2;animation:statusPulse 1s ease-in-out infinite}
+    .print-status[data-state="success"]{color:#17633d;background:#eef9f3;border-color:#c6ead5}
+    .print-status[data-state="success"] .print-status-dot{background:#1f9d61}
+    .print-status[data-state="error"]{color:#9e2f2f;background:#fff3f3;border-color:#f0caca}
+    .print-status[data-state="error"] .print-status-dot{background:#d64545}
+    .print-action-button:disabled{opacity:.56;cursor:wait;transform:none}
+    .print-sheet-head{justify-content:flex-end;margin-bottom:10px}
+    @keyframes statusPulse{50%{opacity:.35;transform:scale(.75)}}
+    .toast{
+      position:fixed;left:50%;bottom:max(94px,calc(env(safe-area-inset-bottom) + 80px));z-index:150;
+      transform:translate(-50%,15px);opacity:0;pointer-events:none;background:rgba(17,24,39,.95);color:#fff;
+      padding:11px 16px;border-radius:999px;font-size:.86rem;font-weight:850;box-shadow:0 10px 28px rgba(0,0,0,.2);
+      transition:opacity .18s ease,transform .18s ease;
+    }
+    .toast.show{opacity:1;transform:translate(-50%,0)}
+    @media(max-width:760px){
+      .app{padding:18px 14px calc(110px + var(--safe-bottom))}
+      .topbar{grid-template-columns:54px 1fr 54px;padding-left:12px;padding-right:12px}
+      .product-grid,.comparison-actions{grid-template-columns:1fr}
+      .hero{min-height:238px}
+      .hero-copy{width:86%;padding:27px 24px}
+      .hero h1{font-size:2.25rem}
+      .product-card{min-height:285px}
+      .section-heading{align-items:flex-start;flex-direction:column}
+      .compare-link{width:100%}
+      .option-grid{grid-template-columns:1fr}
+      .panel{padding:21px 19px}
+      .page-head{flex-direction:column}
+      .sticky-total{grid-template-columns:1fr auto;padding:13px 13px 13px 17px}
+      .sticky-total .primary-button{min-width:0;padding-left:15px;padding-right:15px}
+      .summary-actions{grid-template-columns:1fr}
+      .summary-hero,.summary-body{padding-left:21px;padding-right:21px}
+      .compare-card-head{min-height:124px}
+      .catalogue-hero{grid-template-columns:minmax(0,1fr) minmax(255px,40%);min-height:270px}
+      .catalogue-hero-copy{padding:28px 25px}
+      .catalogue-hero-copy h1{font-size:2.2rem}
+      .catalogue-hero-photo{min-height:270px}
+    }
+    @media(min-width:641px) and (max-width:900px){
+      .fact-lenslets{min-height:108px}
+      .fact-design{min-height:190px}
+    }
+    @media(max-width:640px){
+      .compare-grid{grid-template-columns:1fr}
+      .catalogue-hero{grid-template-columns:1fr}
+      .catalogue-hero-photo{height:245px;min-height:245px;object-position:center 49%}
+      .fact-lenslets,.fact-rings,.fact-design{min-height:0}
+    }
+    @media(max-width:440px){
+      .brand-title{font-size:.9rem}.brand-sub{font-size:.63rem}
+      .hero-copy{width:100%}
+      .hero::after{background:transparent}
+      .config-banner h1{font-size:2.8rem}
+      .hold-hint{max-width:120px}
+      .total-value{font-size:1.45rem}
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <button id="homeButton" class="icon-button invisible" type="button" aria-label="Return to lens comparison" onclick="goHome()">‹</button>
+    <div class="topbar-center" aria-hidden="true"></div>
+    <button class="icon-button" type="button" aria-label="Product and wear information" onclick="openInfo()">i</button>
+  </header>
+  <main id="app" class="app"></main>
+
+  <div id="frameOverlay" class="overlay" role="dialog" aria-modal="true" aria-labelledby="frameTitle" onclick="overlayClick(event,'frameOverlay')">
+    <div class="sheet">
+      <div class="sheet-head">
+        <div><h2 id="frameTitle">Frame</h2><p>Enter the frame amount.</p></div>
+        <button class="close-button" type="button" aria-label="Close" onclick="closeOverlay('frameOverlay')">×</button>
+      </div>
+      <div id="frameDisplay" class="frame-display">RM 0</div>
+      <div class="keypad" aria-label="Frame keypad">
+        <button type="button" onclick="frameKey('1')">1</button><button type="button" onclick="frameKey('2')">2</button><button type="button" onclick="frameKey('3')">3</button>
+        <button type="button" onclick="frameKey('4')">4</button><button type="button" onclick="frameKey('5')">5</button><button type="button" onclick="frameKey('6')">6</button>
+        <button type="button" onclick="frameKey('7')">7</button><button type="button" onclick="frameKey('8')">8</button><button type="button" onclick="frameKey('9')">9</button>
+        <button type="button" onclick="frameKey('clear')">Clear</button><button type="button" onclick="frameKey('0')">0</button><button type="button" onclick="frameKey('back')">⌫</button>
+      </div>
+      <div class="sheet-actions">
+        <button class="secondary-button" type="button" onclick="closeOverlay('frameOverlay')">Cancel</button>
+        <button class="primary-button" type="button" onclick="confirmFrame()">Add frame</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="infoOverlay" class="overlay" role="dialog" aria-modal="true" aria-labelledby="infoTitle" onclick="overlayClick(event,'infoOverlay')">
+    <div class="sheet">
+      <div class="sheet-head">
+        <div><h2 id="infoTitle">Wear and follow-up guide</h2><p>Brief guidance for a Stellest consultation.</p></div>
+        <button class="close-button" type="button" aria-label="Close" onclick="closeOverlay('infoOverlay')">×</button>
+      </div>
+      <div class="info-list">
+        <div class="info-item"><strong>Consistent wear</strong>At least 10 hours each day, at least 6 days each week.</div>
+        <div class="info-item"><strong>Adaptation</strong>An initial adaptation period of up to one week may be expected.</div>
+        <div class="info-item"><strong>First review</strong>A practitioner review is recommended after approximately two weeks.</div>
+        <div class="info-item"><strong>Prescription range</strong>Airwear 1.59. Sphere +2.00D to -12.00D; cylinder up to -4.00D.</div>
+      </div>
+      <p class="disclaimer">Myopia-management spectacle lenses are intended to slow progression. They do not cure, prevent or completely stop myopia. Individual results vary.</p>
+    </div>
+  </div>
+
+  <div id="printOverlay" class="overlay" role="dialog" aria-modal="true" aria-label="Print labels" onclick="overlayClick(event,'printOverlay')">
+    <div class="sheet">
+      <div class="sheet-head print-sheet-head">
+        <button class="close-button" type="button" aria-label="Close" onclick="closeOverlay('printOverlay')">×</button>
+      </div>
+      <div class="label-preview-wrap"><div id="labelPreview" class="label-preview-grid"></div></div>
+      <div id="printStatus" class="print-status" data-state="idle" role="status" aria-live="polite">
+        <span class="print-status-dot" aria-hidden="true"></span><span class="print-status-text">Ready to connect to D520BT-Z</span>
+      </div>
+      <div class="sheet-actions">
+        <button id="printQuotationButton" class="primary-button print-action-button" type="button" onclick="printToD520('quotation')">Print Label</button>
+        <button id="printWarrantyButton" class="primary-button print-action-button" type="button" onclick="printToD520('warranty')">Print Guarantee</button>
+      </div>
+      <div class="booklet-print-block">
+        <div id="bookletPreview"></div>
+        <button id="printBookletButton" class="primary-button print-action-button" type="button" onclick="printToD520('booklet')">Print Booklet Label</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    "use strict";
+
+    var PRODUCTS = {
+      stellest:{
+        key:"stellest",
+        name:"STELLEST",
+        tech:"H.A.L.T.",
+        lenslets:"1,021",
+        rings:"11",
+        extra:"",
+        efficacy:"67% slower myopia progression versus single-vision lenses.",
+        design:"Highly aspherical lenslets arranged across 11 concentric rings.",
+        prices:{rock:1300,prevencia:1400}
+      },
+      stellest2:{
+        key:"stellest2",
+        name:"STELLEST 2.0",
+        tech:"H.A.L.T. MAX",
+        lenslets:"1,190",
+        rings:"12",
+        extra:"169 additional lenslets",
+        efficacy:"Approximately 47% less eye-length growth versus STELLEST.",
+        design:"Higher mean lenslet power and asphericity, with a broader and more forward-positioned volume of non-focused light.",
+        prices:{rock:1700,prevencia:1800},
+        study:"https://doi.org/10.1167/tvst.14.11.9"
+      }
+    };
+
+    var COATINGS = {
+      rock:{name:"Crizal Rock",copy:"Durable scratch and smudge resistance for active everyday wear."},
+      prevencia:{name:"Crizal Prevencia",copy:"Blue-violet light filtering with long-lasting lens protection."}
+    };
+
+    var state = {
+      screen:"compare",
+      product:"stellest",
+      coating:"rock",
+      frame:null,
+      frameComplimentary:false,
+      frameDraft:"",
+      followups:{one:true,two:true},
+      complimentary:false
+    };
+
+    var toastTimer = null;
+    var holdTimer = null;
+    var holdCompleted = false;
+    var frameHoldTimer = null;
+    var frameHoldCompleted = false;
+    var labelPrinterDevice = null;
+    var D520_SERVICE_UUID = "0000ff00-0000-1000-8000-00805f9b34fb";
+    var D520_WRITE_UUID = "0000ff02-0000-1000-8000-00805f9b34fb";
+    var D520_NOTIFY_UUID = "0000ff03-0000-1000-8000-00805f9b34fb";
+
+    function currentProduct(){ return PRODUCTS[state.product]; }
+    function money(value){ return "RM" + Math.round(Number(value)||0).toLocaleString("en-MY"); }
+    function coatingPrice(){ return currentProduct().prices[state.coating]; }
+    function followupTotal(){
+      if(state.complimentary) return 0;
+      return (state.followups.one?120:0) + (state.followups.two?120:0);
+    }
+    function frameIncluded(){ return state.frame!==null || state.frameComplimentary; }
+    function frameTotal(){ return state.frameComplimentary ? 0 : (Number(state.frame)||0); }
+    function grandTotal(){ return coatingPrice() + frameTotal() + followupTotal(); }
+    function coatingName(){ return COATINGS[state.coating].name; }
+
+    function setScreen(name){
+      state.screen = name==="summary" ? "summary" : "compare";
+      render();
+      window.scrollTo({top:0,behavior:"smooth"});
+    }
+    function goHome(){ setScreen("compare"); }
+    function openCompare(){ setScreen("compare"); }
+    function openConfig(key){
+      state.product = key;
+      state.screen = "compare";
+      render();
+      window.scrollTo({top:0,behavior:"smooth"});
+    }
+    function switchProduct(key){
+      state.product = key;
+      render();
+    }
+    function selectCoating(key){
+      state.coating = key;
+      render();
+    }
+    function selectBundle(productKey,coatingKey){
+      state.product = productKey;
+      state.coating = coatingKey;
+      render();
+    }
+    function openSummary(){ setScreen("summary"); }
+
+    function render(){
+      var app = document.getElementById("app");
+      var homeButton = document.getElementById("homeButton");
+      homeButton.classList.toggle("invisible",state.screen==="compare");
+      if(state.screen==="summary") app.innerHTML = summaryHtml();
+      else app.innerHTML = compareHtml();
+      bindBiometryHold();
+      bindFrameHold();
+      updatePrintAreas();
+    }
+
+    function homeHtml(){
+      return '<section class="screen">' +
+        '<div class="hero">' +
+          '<div class="hero-copy">' +
+            '<div class="eyebrow">Essilor myopia management</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="section-heading">' +
+          '<div><div class="section-kicker">Select a lens</div><h2>Two levels of myopia management</h2><p>Tap a product to configure its coating, frame and follow-up plan.</p></div>' +
+          '<button class="compare-link" type="button" onclick="openCompare()">Compare both lenses</button>' +
+        '</div>' +
+        '<div class="product-grid">' + productCard(PRODUCTS.stellest) + productCard(PRODUCTS.stellest2) + '</div>' +
+        '<p class="quiet-note">Both options are designed to slow eye growth while maintaining clear central vision. Results vary and consistent wear is important.</p>' +
+      '</section>';
+    }
+
+    function productCard(p){
+      var next = p.key==="stellest2";
+      return '<article class="product-card ' + (next?'next':'') + '" role="button" tabindex="0" aria-label="Configure ' + p.name + '" onclick="openConfig(\'' + p.key + '\')" onkeydown="productCardKey(event,\'' + p.key + '\')">' +
+        '<div class="product-top"><span class="tech-pill">' + p.tech + '</span><span class="lens-orbit" aria-hidden="true"><i></i></span></div>' +
+        '<h2 class="product-name">' + p.name + '</h2>' +
+        '<div class="product-tagline">' + p.efficacy + '</div>' +
+        '<div class="stat-chips"><span class="stat-chip">' + p.lenslets + ' lenslets</span><span class="stat-chip">' + p.rings + ' rings</span></div>' +
+        '<div class="product-bottom"><div><div class="from-label">From · per pair</div><div class="from-price">' + money(p.prices.rock) + '</div></div><span class="card-arrow">›</span></div>' +
+      '</article>';
+    }
+
+    function productCardKey(event,key){
+      if(event.key==="Enter" || event.key===" "){
+        event.preventDefault();
+        openConfig(key);
+      }
+    }
+
+    function compareHtml(){
+      return '<section class="screen">' +
+        '<div class="catalogue-hero"><div class="catalogue-hero-copy"><div class="eyebrow">Essilor Stellest</div><h1>Clear vision today.<br>A brighter future tomorrow.</h1><p>Advanced myopia management designed for growing eyes.</p></div><img class="catalogue-hero-photo" src="assets/stellest-hero.png" alt="Child wearing Essilor Stellest lenses"></div>' +
+        '<div class="compare-grid">' + compareCard(PRODUCTS.stellest) + compareCard(PRODUCTS.stellest2) + '</div>' +
+        '<p class="quiet-note compare-note">Both lenses are intended to slow myopia progression while maintaining clear central vision. Individual results vary.</p>' +
+        compareReviewHtml() +
+      '</section>';
+    }
+
+    function compareCard(p){
+      var next = p.key==="stellest2";
+      var selected = state.product===p.key;
+      var study = p.study ? '<a class="study-link" href="' + p.study + '" target="_blank" rel="noopener noreferrer">View clinical study ↗</a>' : '';
+      return '<article class="compare-card ' + (selected?'selected':'') + '">' +
+        '<div class="compare-card-head ' + (next?'next':'') + '"><div class="eyebrow">' + p.tech + '</div><h2>' + p.name + '</h2></div>' +
+        '<div class="compare-card-body">' +
+          '<div class="fact-row fact-lenslets"><span class="fact-label">Lenslets</span><span class="fact-value">' + p.lenslets + (p.extra?'<br><small>+169 versus STELLEST</small>':'') + '</span></div>' +
+          '<div class="fact-row fact-rings"><span class="fact-label">Concentric rings</span><span class="fact-value">' + p.rings + '</span></div>' +
+          '<div class="fact-row fact-design"><span class="fact-label">Lenslet design</span><span class="fact-value">' + p.design + '</span></div>' +
+          '<div class="efficacy-box"><div class="fact-label">Efficacy</div><div class="efficacy-value">' + p.efficacy + '</div>' + study + '</div>' +
+          '<div class="bundle-section"><div class="bundle-heading"><div class="bundle-title">Choose Crizal coating</div><div class="bundle-note">Price per pair</div></div><div class="bundle-options">' + compareCoatingOption(p,"rock") + compareCoatingOption(p,"prevencia") + '</div></div>' +
+        '</div>' +
+      '</article>';
+    }
+
+    function compareCoatingOption(p,key){
+      var c = COATINGS[key];
+      var selected = state.product===p.key && state.coating===key;
+      return '<button type="button" class="bundle-option ' + (selected?'selected':'') + '" aria-pressed="' + selected + '" onclick="selectBundle(\'' + p.key + '\',\'' + key + '\')">' +
+        '<span class="bundle-radio" aria-hidden="true"></span><span><span class="bundle-name">' + c.name + '</span><span class="bundle-copy">' + c.copy + '</span></span><span class="bundle-price">' + money(p.prices[key]) + '</span>' +
+      '</button>';
+    }
+
+    function compareReviewHtml(){
+      return '<div class="sticky-total" role="region" aria-label="Selected lens coating"><div><div class="total-label">Lens coating</div><div class="total-value">' + money(coatingPrice()) + '</div></div><button class="primary-button" type="button" onclick="openSummary()">Review summary</button></div>';
+    }
+
+    function summaryControlsHtml(){
+      return '<div class="summary-controls"><div class="panel"><button id="frameRow" class="row-action frame-hold" type="button" aria-label="Frame. Tap to enter an amount; press and hold to toggle complimentary." onclick="frameRowClick()"><div><div class="row-label">Frame</div></div><div class="row-value">' + frameValueHtml() + '</div></button>' +
+          (frameIncluded()?'<div style="text-align:right;margin-top:10px"><button class="frame-clear" type="button" onclick="clearFrame()">Remove frame</button></div>':'') +
+        '</div>' +
+        '<div class="panel">' +
+          '<div class="bio-heading-wrap"><button id="bioTitle" class="bio-title" type="button" aria-label="Press and hold to toggle complimentary biometry follow-ups">Biometry follow-up</button></div>' +
+          '<div class="follow-list">' + followupRow("one","Follow-up 1") + followupRow("two","Follow-up 2") + '</div>' +
+        '</div></div>';
+    }
+
+    function configureHtml(){
+      var p = currentProduct();
+      var next = p.key==="stellest2";
+      return '<section class="screen">' +
+        '<div class="page-head">' +
+          '<div><div class="section-kicker">Build a recommendation</div><h1>Configure the pair</h1><p>Prices shown are per pair.</p></div>' +
+          '<div class="product-switch" aria-label="Switch Stellest product">' +
+            '<button type="button" class="' + (state.product==="stellest"?'active':'') + '" onclick="switchProduct(\'stellest\')">STELLEST</button>' +
+            '<button type="button" class="' + (state.product==="stellest2"?'active':'') + '" onclick="switchProduct(\'stellest2\')">STELLEST 2.0</button>' +
+          '</div>' +
+        '</div>' +
+        '<div class="config-banner ' + (next?'next':'') + '">' +
+          '<div class="eyebrow">' + p.tech + '</div><h1>' + p.name + '</h1><div>' + p.efficacy + '</div>' +
+          '<div class="banner-facts"><span class="banner-fact">' + p.lenslets + ' lenslets</span><span class="banner-fact">' + p.rings + ' rings</span><span class="banner-fact">Airwear 1.59</span></div>' +
+        '</div>' +
+        '<div class="panel"><h2 class="panel-title">1. Choose coating</h2><p class="panel-sub">The selected price includes the Stellest lens pair and coating.</p><div class="option-grid">' + coatingOption("rock") + coatingOption("prevencia") + '</div></div>' +
+        '<div class="panel"><button id="frameRow" class="row-action frame-hold" type="button" aria-label="Frame. Tap to enter an amount; press and hold to toggle complimentary." onclick="frameRowClick()"><div><div class="row-label">2. Frame</div></div><div class="row-value">' + frameValueHtml() + '</div></button>' +
+          (frameIncluded()?'<div style="text-align:right;margin-top:10px"><button class="frame-clear" type="button" onclick="clearFrame()">Remove frame</button></div>':'') +
+        '</div>' +
+        '<div class="panel">' +
+          '<div class="bio-heading-wrap"><button id="bioTitle" class="bio-title" type="button" aria-label="Press and hold to toggle complimentary biometry follow-ups">3. Biometry follow-up</button></div>' +
+          '<div class="follow-list">' + followupRow("one","Follow-up 1") + followupRow("two","Follow-up 2") + '</div>' +
+        '</div>' +
+        '<div class="sticky-total" role="region" aria-label="Grand total"><div><div class="total-label">Grand Total</div><div class="total-value">' + money(grandTotal()) + '</div></div><button class="primary-button" type="button" onclick="openSummary()">Review summary</button></div>' +
+      '</section>';
+    }
+
+    function coatingOption(key){
+      var c = COATINGS[key];
+      return '<button type="button" class="option-card ' + (state.coating===key?'selected':'') + '" onclick="selectCoating(\'' + key + '\')">' +
+        '<span class="check" aria-hidden="true"></span><div class="option-name">' + c.name + '</div><div class="option-copy">' + c.copy + '</div><div class="option-price">' + money(currentProduct().prices[key]) + '</div>' +
+      '</button>';
+    }
+
+    function followupRow(key,label){
+      var selected = state.followups[key];
+      var amount = selected ? (state.complimentary?'<span class="complimentary-stack"><s>RM120</s><span class="complimentary-pill">COMPLIMENTARY</span></span>':'RM120') : 'Not included';
+      return '<button type="button" class="follow-row ' + (selected?'selected':'') + '" onclick="toggleFollowup(\'' + key + '\')">' +
+        '<span class="tick">' + (selected?'✓':'') + '</span><span class="follow-name">' + label + '</span><span class="follow-status">' + amount + '</span>' +
+      '</button>';
+    }
+
+    function frameValueHtml(){
+      if(!state.frameComplimentary) return state.frame!==null ? money(state.frame) : 'Add frame';
+      return '<span class="complimentary-stack"><s>' + money(state.frame) + '</s><span class="complimentary-pill">COMPLIMENTARY</span></span>';
+    }
+
+    function summaryHtml(){
+      var p = currentProduct();
+      var next = p.key==="stellest2";
+      var rows = summaryRow("Lens coating",coatingName(),money(coatingPrice()));
+      return '<section class="screen">' +
+        '<div class="summary-card">' +
+          '<div class="summary-hero ' + (next?'next':'') + '"><div class="eyebrow">' + p.tech + '</div><h1>' + p.name + '</h1><div>' + p.lenslets + ' lenslets · ' + p.rings + ' rings</div></div>' +
+          '<div class="summary-body">' + rows + '</div>' +
+        '</div>' +
+        summaryControlsHtml() +
+        '<div class="summary-grand summary-total"><span>Grand Total</span><strong>' + money(grandTotal()) + '</strong></div>' +
+        '<div class="summary-actions"><button class="secondary-button" type="button" onclick="setScreen(\'compare\')">Edit recommendation</button><button class="primary-button" type="button" onclick="openPrintPreview()">Preview and print label</button></div>' +
+      '</section>';
+    }
+
+    function summaryRow(label,detail,value){
+      return '<div class="summary-row"><div><div class="summary-row-label">' + label + '</div>' + (detail?'<div class="row-sub">'+detail+'</div>':'') + '</div><div class="summary-row-value">' + value + '</div></div>';
+    }
+
+    function toggleFollowup(key){
+      state.followups[key] = !state.followups[key];
+      render();
+    }
+
+    function bindBiometryHold(){
+      var el = document.getElementById("bioTitle");
+      if(!el) return;
+      function start(ev){
+        if(ev.type==="keydown" && ev.key!=="Enter" && ev.key!==" ") return;
+        if(ev.type==="keydown"){
+          ev.preventDefault();
+          toggleComplimentary();
+          return;
+        }
+        holdCompleted = false;
+        el.classList.add("pressing");
+        holdTimer = window.setTimeout(function(){
+          holdCompleted = true;
+          toggleComplimentary();
+          if(navigator.vibrate) navigator.vibrate(35);
+        },850);
+      }
+      function cancel(){
+        window.clearTimeout(holdTimer);
+        if(el) el.classList.remove("pressing");
+      }
+      el.addEventListener("pointerdown",start);
+      el.addEventListener("pointerup",cancel);
+      el.addEventListener("pointerleave",cancel);
+      el.addEventListener("pointercancel",cancel);
+      el.addEventListener("keydown",start);
+      el.addEventListener("contextmenu",function(ev){ev.preventDefault()});
+    }
+
+    function toggleComplimentary(){
+      state.complimentary = !state.complimentary;
+      state.followups.one = true;
+      state.followups.two = true;
+      render();
+      showToast(state.complimentary?"Both follow-ups are complimentary":"Follow-up prices restored");
+    }
+
+    function bindFrameHold(){
+      var el = document.getElementById("frameRow");
+      if(!el) return;
+      function start(){
+        frameHoldCompleted = false;
+        el.classList.add("pressing");
+        frameHoldTimer = window.setTimeout(function(){
+          frameHoldCompleted = true;
+          toggleFrameComplimentary();
+          if(navigator.vibrate) navigator.vibrate(35);
+        },850);
+      }
+      function cancel(){
+        window.clearTimeout(frameHoldTimer);
+        if(el) el.classList.remove("pressing");
+      }
+      el.addEventListener("pointerdown",start);
+      el.addEventListener("pointerup",cancel);
+      el.addEventListener("pointerleave",cancel);
+      el.addEventListener("pointercancel",cancel);
+      el.addEventListener("contextmenu",function(ev){ev.preventDefault()});
+    }
+
+    function frameRowClick(){
+      if(frameHoldCompleted){
+        frameHoldCompleted = false;
+        return;
+      }
+      openFramePad();
+    }
+
+    function toggleFrameComplimentary(){
+      if(state.frame===null && !state.frameComplimentary){
+        showToast("Add a frame amount first");
+        return;
+      }
+      state.frameComplimentary = !state.frameComplimentary;
+      render();
+      showToast(state.frameComplimentary?"Frame is complimentary":"Frame restored");
+    }
+
+    function openFramePad(){
+      state.frameDraft = state.frame===null?"":String(Math.round(state.frame));
+      updateFrameDisplay();
+      openOverlay("frameOverlay");
+    }
+    function frameKey(key){
+      if(key==="clear") state.frameDraft = "";
+      else if(key==="back") state.frameDraft = state.frameDraft.slice(0,-1);
+      else if(state.frameDraft.length<5) state.frameDraft += key;
+      state.frameDraft = state.frameDraft.replace(/^0+(?=\d)/,"");
+      updateFrameDisplay();
+    }
+    function updateFrameDisplay(){
+      document.getElementById("frameDisplay").textContent = money(Number(state.frameDraft)||0).replace("RM","RM ");
+    }
+    function confirmFrame(){
+      var value = Number(state.frameDraft)||0;
+      state.frame = value>0?value:null;
+      state.frameComplimentary = false;
+      closeOverlay("frameOverlay");
+      render();
+    }
+    function clearFrame(){
+      state.frame = null;
+      state.frameComplimentary = false;
+      render();
+    }
+
+    function openInfo(){ openOverlay("infoOverlay"); }
+    function openPrintPreview(){
+      updatePrintAreas();
+      setPrintStatus("Ready to connect to D520BT-Z","idle");
+      openOverlay("printOverlay");
+    }
+    function openOverlay(id){
+      document.getElementById(id).classList.add("open");
+      document.body.style.overflow = "hidden";
+    }
+    function closeOverlay(id){
+      document.getElementById(id).classList.remove("open");
+      document.body.style.overflow = "";
+    }
+    function overlayClick(event,id){
+      if(event.target.id===id) closeOverlay(id);
+    }
+    function showToast(message){
+      var el = document.getElementById("toast");
+      el.textContent = message;
+      el.classList.add("show");
+      window.clearTimeout(toastTimer);
+      toastTimer = window.setTimeout(function(){el.classList.remove("show")},2200);
+    }
+
+    function essilorLogoHtml(){
+      return '<img class="label-essilor-logo" src="assets/essilor-logo.png" alt="Essilor">';
+    }
+    function printProductClass(p){
+      return p.key==="stellest2" ? " product-long" : "";
+    }
+    function quotationLabelHtml(){
+      var p = currentProduct();
+      var html = essilorLogoHtml() + '<div class="label-product' + printProductClass(p) + '">' + p.name + '</div><div class="label-tech">' + p.tech + ' · AIRWEAR 1.59</div><div class="label-rule"></div>';
+      html += labelRow(coatingName(),money(coatingPrice()));
+      if(frameIncluded()) html += labelRow("Frame",state.frameComplimentary?labelComplimentary(money(state.frame)):money(state.frame));
+      if(state.followups.one) html += labelRow("Follow-up 1",state.complimentary?labelComplimentary("RM120"):'RM120');
+      if(state.followups.two) html += labelRow("Follow-up 2",state.complimentary?labelComplimentary("RM120"):'RM120');
+      html += '<div class="label-total"><span>GRAND TOTAL</span><strong>' + money(grandTotal()) + '</strong></div>';
+      return html;
+    }
+    function warrantyLabelHtml(){
+      var p = currentProduct();
+      return '<div class="warranty-head">' + essilorLogoHtml() + '<div class="label-product' + printProductClass(p) + '">' + p.name + '</div></div><div class="label-rule"></div>' +
+        '<div class="warranty-title">6-Month Prescription Change Guarantee</div>' +
+        '<div class="warranty-copy">For prescription increase by 0.75D or more within 6 months, lenses will be replaced at no charge.</div>';
+    }
+    function bookletLabelHtml(){
+      var p = currentProduct();
+      return '<div class="booklet-head">' + essilorLogoHtml() + '<div class="booklet-product' + printProductClass(p) + '">' + p.name + '</div><div class="booklet-title">MYOPIA<br>MANAGEMENT</div></div>' +
+        '<div class="booklet-rule"></div><div class="booklet-main">' +
+          '<div class="booklet-followups"><div class="booklet-check"><span class="booklet-box"></span>Follow-up 1</div><div class="booklet-check"><span class="booklet-box"></span>Follow-up 2</div></div>' +
+          '<div class="booklet-warranty"><strong>6-Month Guarantee</strong><span>For prescription increase by 0.75D or more within 6 months, lenses will be replaced at no charge.</span></div>' +
+        '</div><div class="booklet-fee">Further biometry follow-ups are <strong>RM120 per visit.</strong></div>';
+    }
+    function labelRow(label,value){ return '<div class="label-row"><span>' + label + '</span><span>' + value + '</span></div>'; }
+    function labelComplimentary(value){ return '<s class="label-struck-price">' + value + '</s>'; }
+    function updatePrintAreas(){
+      var quotation = quotationLabelHtml();
+      var warranty = warrantyLabelHtml();
+      document.getElementById("labelPreview").innerHTML = '<div class="label-preview">' + quotation + '</div><div class="label-preview label-warranty">' + warranty + '</div>';
+      document.getElementById("bookletPreview").innerHTML = '<div class="label-preview label-booklet">' + bookletLabelHtml() + '</div>';
+    }
+    function setPrintStatus(message,state){
+      var status = document.getElementById("printStatus");
+      status.dataset.state = state || "idle";
+      status.querySelector(".print-status-text").textContent = message;
+    }
+    function setPrintButtonsDisabled(disabled){
+      document.getElementById("printQuotationButton").disabled = disabled;
+      document.getElementById("printWarrantyButton").disabled = disabled;
+      document.getElementById("printBookletButton").disabled = disabled;
+    }
+
+    function tsplSafe(value){
+      return String(value==null?"":value).replace(/[“”]/g,'"').replace(/"/g,"'").replace(/\s+/g," ").trim();
+    }
+    var ESSILOR_LOGO_BITMAP_HEX =
+      "0000000000000000000000000000000000000000000000000000000000000000000000000000000000018000000000000000000000FFFE000000000000000000" +
+      "07FFFFC000000000000000001FFFFFF800000000000000007FFFFFFC0000000000000001FFFFFFFF0000000000000003FFF83FFF8000000000000007FFE007FF" +
+      "E00000000000000FFF8003FFF00000000000001FFF07C1FFF80000000000003FFE0FE0FFFC0000000000007FFE3FC1FFFC000000000000FFFC3F83FFFE000000" +
+      "000001FFFC7F07FFFF000000000001FFFC7E0FFFFF800000000003FFFC7C3FFFFF800000000003FFFC7C3E3FFFC00000000003FFFC7EFE3FFF800000000001FF" +
+      "FC7FFC7FFF000000000000FFFC7FFC7FFF000000000000FFFE3FF87FFE0000000000007FFE1FF0FFFC0000000000003FFF0FE0FFF80000000000001FFF8001FF" +
+      "F00000000000000FFFC007FFE000000000000007FFF00FFFC000000000000001FFFFFFFF8000000000000000FFFFFFFE00000000000000003FFFFFF800000000" +
+      "000000000FFFFFE0000000000000000001FFFF800000000000000000003FF8000000000000000000000000000000000000000000000000000000000000000000" +
+      "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006E0000000000000000000000EE00" +
+      "00000000000000000000FE00000000000000000000006E0000000000000000FC3E3EEE3F1FC00000000001FE7E7EEE7F9FC00000000003FEFEFEEEFFDFC00000" +
+      "00000387F0F0EEE1DE000000000003FF7C7EEFE1DC000000000003FF7F3FEFE1FC000000000003801F0FEEE1DC000000000003C6E7E7EEF3DC000000000001FE" +
+      "FFFFEEFFDC000000000001FEFEFEEE7F9C000000000000783838001E000000000000000000000000000000000000000000000000000000000000000000000000" +
+      "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
+    function hexToBinary(hex,invert){
+      var out = "";
+      for(var i=0;i<hex.length;i+=2){
+        var value = parseInt(hex.slice(i,i+2),16);
+        out += String.fromCharCode(invert ? (255-value) : value);
+      }
+      return out;
+    }
+    function positiveLogoBinary(){ return hexToBinary(ESSILOR_LOGO_BITMAP_HEX,true); }
+    function rotatedPositiveLogoBinary(){
+      var source = positiveLogoBinary();
+      var output = new Uint8Array(8*96);
+      for(var sourceY=0;sourceY<64;sourceY++){
+        for(var sourceX=0;sourceX<96;sourceX++){
+          var sourceByte = source.charCodeAt((sourceY*12)+Math.floor(sourceX/8));
+          if(sourceByte & (128 >> (sourceX%8))){
+            var targetX = 63-sourceY;
+            var targetY = sourceX;
+            output[(targetY*8)+Math.floor(targetX/8)] |= 128 >> (targetX%8);
+          }
+        }
+      }
+      var binary = "";
+      for(var i=0;i<output.length;i++) binary += String.fromCharCode(output[i]);
+      return binary;
+    }
+    function landscapeText(commands,x,y,font,xScale,yScale,value){
+      commands.push('TEXT '+(320-y)+','+x+',"'+font+'",90,'+(xScale||1)+','+(yScale||1)+',"'+tsplSafe(value)+'"');
+    }
+    function landscapeBar(commands,x,y,width,height){
+      commands.push('BAR '+(320-y-height)+','+x+','+height+','+width);
+    }
+    function landscapeBox(commands,x1,y1,x2,y2,thickness){
+      commands.push('BOX '+(320-y2)+','+x1+','+(320-y1)+','+x2+','+(thickness||1));
+    }
+    function landscapeLogo(commands,x,y){
+      commands.push('BITMAP '+(320-y-64)+','+x+',8,96,0,'+rotatedPositiveLogoBinary());
+    }
+    function buildLabelTSPL(kind){
+      var p = currentProduct();
+      var font = "TSS24.BF2";
+      if(kind==="booklet"){
+        var booklet = ["SIZE 40 mm,60 mm","GAP 2 mm,0 mm","DIRECTION 1","REFERENCE 0,0","CLS"];
+        landscapeLogo(booklet,18,10);
+        landscapeText(booklet,132,28,font,1,1,p.name);
+        landscapeText(booklet,404,20,"1",1,1,"MYOPIA");
+        landscapeText(booklet,376,40,"1",1,1,"MANAGEMENT");
+        landscapeBar(booklet,18,82,444,2);
+        landscapeBox(booklet,18,106,38,126,2);
+        landscapeText(booklet,50,106,"2",1,1,"FOLLOW-UP 1");
+        landscapeBox(booklet,18,188,38,208,2);
+        landscapeText(booklet,50,188,"2",1,1,"FOLLOW-UP 2");
+        landscapeBar(booklet,226,96,2,142);
+        landscapeText(booklet,246,102,"2",1,1,"6-MONTH GUARANTEE");
+        landscapeText(booklet,246,132,"1",1,1,"FOR PRESCRIPTION");
+        landscapeText(booklet,246,148,"1",1,1,"INCREASE BY 0.75D");
+        landscapeText(booklet,246,164,"1",1,1,"OR MORE WITHIN 6 MONTHS,");
+        landscapeText(booklet,246,180,"1",1,1,"LENSES WILL BE REPLACED");
+        landscapeText(booklet,246,196,"1",1,1,"AT NO CHARGE");
+        landscapeBar(booklet,18,250,444,2);
+        landscapeText(booklet,48,266,"1",1,1,"FURTHER BIOMETRY FOLLOW-UPS ARE RM120 PER VISIT");
+        booklet.push("PRINT 1,1","");
+        return booklet.join("\r\n");
+      }
+      function newLabel(){ return ["SIZE 40 mm,60 mm","GAP 2 mm,0 mm","DIRECTION 1","REFERENCE 0,0","CLS"]; }
+      var cmd = newLabel();
+      var x = 20, y = 12;
+      function text(line,scale,advance){
+        cmd.push('TEXT '+x+','+y+',"'+font+'",0,'+(scale||1)+','+(scale||1)+',"'+tsplSafe(line)+'"');
+        y += advance || (scale===2?54:29);
+      }
+      function productName(){
+        var originalX = x;
+        if(p.key==="stellest2") x = 16;
+        cmd.push('TEXT '+x+','+y+',"4",0,1,1,"'+tsplSafe(p.name)+'"');
+        y += 42;
+        x = originalX;
+      }
+      function smallText(line){
+        cmd.push('TEXT '+x+','+y+',"1",0,1,1,"'+tsplSafe(line)+'"');
+        y += 20;
+      }
+      function rule(){cmd.push("BAR "+x+","+(y+4)+",300,2");y+=21}
+      function priceRow(label,amount){
+        var value = "RM "+String(Math.round(Number(amount)||0));
+        var valueX = Math.max(188,310-(value.length*12));
+        cmd.push('TEXT '+x+','+y+',"2",0,1,1,"'+tsplSafe(label)+'"');
+        cmd.push('TEXT '+valueX+','+y+',"2",0,1,1,"'+tsplSafe(value)+'"');
+        y+=30;
+      }
+      function struckPriceRow(label,amount){
+        var value = "RM "+String(Math.round(Number(amount)||0));
+        var valueX = Math.max(188,310-(value.length*12));
+        cmd.push('TEXT '+x+','+y+',"2",0,1,1,"'+tsplSafe(label)+'"');
+        cmd.push('TEXT '+valueX+','+y+',"2",0,1,1,"'+tsplSafe(value)+'"');
+        cmd.push("BAR "+valueX+","+(y+10)+","+(value.length*12)+",2");
+        y += 30;
+      }
+      function logo(){
+        cmd.push("BITMAP "+x+","+y+",12,64,0,"+positiveLogoBinary());
+        y += 80;
+      }
+      if(kind==="warranty"){
+        cmd = ["SIZE 40 mm,60 mm","GAP 2 mm,0 mm","DIRECTION 1","REFERENCE 0,0","CLS"];
+        landscapeLogo(cmd,18,12);
+        landscapeText(cmd,134,32,"4",1,1,p.name);
+        landscapeBar(cmd,18,88,444,2);
+        landscapeText(cmd,18,103,"3",1,1,"6-MONTH PRESCRIPTION");
+        landscapeText(cmd,18,131,"3",1,1,"CHANGE GUARANTEE");
+        landscapeBar(cmd,18,164,444,2);
+        landscapeText(cmd,18,182,"2",1,1,"FOR PRESCRIPTION INCREASE BY 0.75D");
+        landscapeText(cmd,18,206,"2",1,1,"OR MORE WITHIN 6 MONTHS, LENSES");
+        landscapeText(cmd,18,230,"2",1,1,"WILL BE REPLACED AT NO CHARGE");
+      }else{
+        logo();
+        productName();
+        text(p.tech+"  AIRWEAR 1.59",1);
+        rule();
+        priceRow(coatingName(),coatingPrice());
+        if(frameIncluded()){
+          if(state.frameComplimentary) struckPriceRow("Frame",state.frame);
+          else priceRow("Frame",state.frame);
+        }
+        if(state.followups.one){
+          if(state.complimentary) struckPriceRow("Follow-up 1",120);
+          else priceRow("Follow-up 1",120);
+        }
+        if(state.followups.two){
+          if(state.complimentary) struckPriceRow("Follow-up 2",120);
+          else priceRow("Follow-up 2",120);
+        }
+        rule();
+        text("TOTAL  "+money(grandTotal()).replace("RM","RM "),1);
+      }
+      cmd.push("PRINT 1,1","");
+      return cmd.join("\r\n");
+    }
+    function sleep(ms){return new Promise(function(resolve){window.setTimeout(resolve,ms)})}
+    async function printerChannels(){
+      if(!navigator.bluetooth) throw new Error("Web Bluetooth is not available. Open the catalogue in Bluefy/WebBLE on iPad.");
+      if(!labelPrinterDevice){
+        labelPrinterDevice = await navigator.bluetooth.requestDevice({
+          filters:[{namePrefix:"D520"},{namePrefix:"D520BT"},{namePrefix:"D520BT-Z"},{namePrefix:"D"}],
+          optionalServices:[D520_SERVICE_UUID]
+        });
+      }
+      var server = labelPrinterDevice.gatt.connected ? labelPrinterDevice.gatt : await labelPrinterDevice.gatt.connect();
+      var service = await server.getPrimaryService(D520_SERVICE_UUID);
+      var writeCharacteristic = await service.getCharacteristic(D520_WRITE_UUID);
+      try{
+        var notify = await service.getCharacteristic(D520_NOTIFY_UUID);
+        await notify.startNotifications();
+      }catch(ignore){}
+      return writeCharacteristic;
+    }
+    async function writeChunks(characteristic,text){
+      var bytes = new Uint8Array(text.length);
+      for(var n=0;n<text.length;n++) bytes[n] = text.charCodeAt(n) & 255;
+      for(var i=0;i<bytes.length;i+=20){
+        var chunk = bytes.slice(i,i+20);
+        if(characteristic.properties.writeWithoutResponse && characteristic.writeValueWithoutResponse) await characteristic.writeValueWithoutResponse(chunk);
+        else await characteristic.writeValue(chunk);
+        await sleep(35);
+      }
+    }
+    async function printToD520(kind){
+      var labelName = kind==="booklet" ? "Booklet label" : (kind==="warranty" ? "Guarantee" : "Quotation");
+      setPrintButtonsDisabled(true);
+      try{
+        setPrintStatus("Connecting to D520BT-Z…","busy");
+        var characteristic = await printerChannels();
+        setPrintStatus("Sending " + labelName.toLowerCase() + "…","busy");
+        await writeChunks(characteristic,buildLabelTSPL(kind));
+        await sleep(1000);
+        setPrintStatus(labelName + " sent to D520BT-Z","success");
+      }catch(error){
+        setPrintStatus("Print failed: " + (error&&error.message?error.message:String(error)),"error");
+      }finally{
+        if(labelPrinterDevice && labelPrinterDevice.gatt && labelPrinterDevice.gatt.connected) labelPrinterDevice.gatt.disconnect();
+        setPrintButtonsDisabled(false);
+      }
+    }
+
+    document.addEventListener("keydown",function(event){
+      if(event.key==="Escape"){
+        closeOverlay("frameOverlay");
+        closeOverlay("infoOverlay");
+        closeOverlay("printOverlay");
+      }
+    });
+
+    render();
+  </script>
+</body>
+</html>
