@@ -76,6 +76,7 @@ Prices are per pair.
 - Browser printing is omitted.
 - Supports AIMO D520BT-Z Bluetooth printing through Bluefy/WebBLE using the same FF00/FF02/FF03 channel pattern as ZIC.
 - The print panel shows connecting, sending, success and failure status without closing after a print.
+- Bitmap bytes are polarity-corrected for the D520BT-Z so all three labels print as black content on white stock rather than white content on black blocks.
 
 ## Files
 
@@ -106,4 +107,4 @@ The site is self-contained apart from the external clinical-study link.
 
 ## Current release
 
-2026-09-28-r1.25
+2026-09-28-r1.26

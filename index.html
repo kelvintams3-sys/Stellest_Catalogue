@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#071b52">
-  <meta name="stellest-catalogue-release" content="2026-09-28-r1.25">
+  <meta name="stellest-catalogue-release" content="2026-09-28-r1.26">
   <title>Stellest Catalogue</title>
   <meta name="description" content="Interactive Essilor Stellest and Stellest 2.0 consultation catalogue.">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23071b52'/%3E%3Ccircle cx='32' cy='32' r='18' fill='none' stroke='%236bd4da' stroke-width='4'/%3E%3Ccircle cx='32' cy='32' r='7' fill='%23fff'/%3E%3C/svg%3E">
@@ -989,7 +989,7 @@
             var xx=left+bx*8+bit;
             if(xx<320 && pixels.data[(yy*320+xx)*4]===0)bits|=128>>bit;
           }
-          data+=String.fromCharCode(bits);
+          data+=String.fromCharCode(255-bits);
         }
         commands.push("BITMAP "+left+","+minY+","+bytesWide+","+(maxY-minY+1)+",0,"+data);
       });
@@ -1858,7 +1858,7 @@
       var commands = ["SIZE 40 mm,60 mm","GAP 2 mm,0 mm","DIRECTION 1","REFERENCE 0,0","CLS"];
       for(var i=0;i<segments.length;i++){
         var segment = segments[i];
-        commands.push("BITMAP "+segment.x+","+segment.y+","+segment.w+","+segment.h+",0,"+hexToBinary(segment.hex,false));
+        commands.push("BITMAP "+segment.x+","+segment.y+","+segment.w+","+segment.h+",0,"+hexToBinary(segment.hex,true));
       }
       commands.push("PRINT 1,1","");
       return commands.join("\r\n");
