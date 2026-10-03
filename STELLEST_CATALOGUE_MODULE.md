@@ -73,10 +73,12 @@ Prices are per pair.
 - The booklet label includes unticked “Follow-up 1” and “Follow-up 2” boxes, with blank space for handwritten follow-up dates and no printed date lines.
 - It states that further biometry follow-ups are RM120 per visit and repeats the six-month guarantee wording.
 - The booklet guarantee title and supporting sentence are clearly separated, with slightly larger supporting text for readability.
+- A fourth print option, “Print Biometry Follow-up Extension”, appears below the booklet label. It retains the booklet header, empty Follow-up 1 and Follow-up 2 checkboxes, blank handwritten date space and RM120-per-visit footer. The right-hand guarantee block is replaced with “BIOMETRY FOLLOW-UP EXTENSION”.
+- The extension supports both products and uses the same pre-rotated 40 × 60 mm raster and positive-black polarity as the booklet. Its preview is rendered from exactly the same bitmap pixels sent to the printer.
 - Browser printing is omitted.
 - Supports AIMO D520BT-Z Bluetooth printing through Bluefy/WebBLE using the same FF00/FF02/FF03 channel pattern as ZIC.
 - The print panel shows connecting, sending, success and failure status without closing after a print.
-- Bitmap bytes are polarity-corrected for the D520BT-Z so all three labels print as black content on white stock rather than white content on black blocks.
+- Bitmap bytes are polarity-corrected for the D520BT-Z so all four labels print as black content on white stock rather than white content on black blocks.
 
 ## Files
 
@@ -88,6 +90,8 @@ Prices are per pair.
       guarantee-stellest2.png
       booklet-stellest.png
       booklet-stellest2.png
+      extension-stellest.png
+      extension-stellest2.png
     trigger/
       deploy.txt
 
@@ -102,9 +106,9 @@ The site is self-contained apart from the external clinical-study link.
 - Follow-up totals calculate correctly in paid and complimentary states.
 - STELLEST 2.0 study link opens the peer-reviewed paper.
 - Summary and print label preserve the selected options.
-- All D520BT-Z output remains physically 40 × 60 mm. The quotation is printed from its live preview bitmap. The guarantee and booklet are pre-rotated into their transmitted bitmaps, including the logo and text; neither relies on the printer's text rotation.
+- All D520BT-Z output remains physically 40 × 60 mm. The quotation is printed from its live preview bitmap. The guarantee, booklet and extension are pre-rotated into their transmitted bitmaps, including the logo and text; neither relies on the printer's text rotation.
 - No customer or patient data is stored.
 
 ## Current release
 
-2026-09-28-r1.26
+2026-10-03-r1.27
